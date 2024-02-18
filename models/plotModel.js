@@ -30,6 +30,12 @@ plotSchema.virtual("plotPh", {
 	foreignField: "plotId",
 	justOne: false,
 });
+plotSchema.virtual("plotMoisture", {
+	ref: "Moisture",
+	localField: "_id",
+	foreignField: "plotId",
+	justOne: false,
+});
 
 const Plot = new mongoose.model("Plot", plotSchema);
 

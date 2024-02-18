@@ -1,12 +1,14 @@
 const Temperature = require("../models/temperature");
 const Ph = require("../models/phModel");
 const Plot = require("../models/plotModel");
+const Moisture = require("../models/moistureModal");
 const asyncHandler = require("../utils/asyncHandler");
 
 exports.getAll = asyncHandler(async (req, res) => {
 	const plots = await Plot.find()
 		.populate({ path: "plotTemperature" })
-		.populate({ path: "plotPh" });
+		.populate({ path: "plotPh" })
+		.populate({ path: "plotMoisture" });
 	res.status(200).json({
 		status: "success",
 		results: plots.length,
@@ -42,22 +44,28 @@ exports.create = asyncHandler(async (req, res) => {
 	});
 });
 exports.recordCurrentData = asyncHandler(async (req, res) => {
-	const { id, temp, ph } = req.query;
+	const { id, temp, ph, moisture } = req.query;
 
 	let plot = await Plot.findOne({ regId: id });
 	if (!plot) {
 		plot = await Plot.create({ regId: id });
 	}
+	const date = new Date();
 
 	await Temperature.create({
 		plotId: plot._id,
 		value: temp,
-		date: new Date(),
+		date: date,
 	});
 	await Ph.create({
 		plotId: plot._id,
 		value: ph,
-		date: new Date(),
+		date: date,
+	});
+	await Moisture.create({
+		plotId: plot._id,
+		value: moisture,
+		date: date,
 	});
 
 	res.status(201).json({
