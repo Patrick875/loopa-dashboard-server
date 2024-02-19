@@ -44,7 +44,7 @@ exports.create = asyncHandler(async (req, res) => {
 	});
 });
 exports.recordCurrentData = asyncHandler(async (req, res) => {
-	const { id, temp, ph, moisture } = req.query;
+	const { id, temp, ph, moisture } = req.body;
 
 	let plot = await Plot.findOne({ regId: id });
 	if (!plot) {

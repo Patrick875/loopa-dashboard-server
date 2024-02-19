@@ -5,7 +5,7 @@ const plotController = require("./../controllers/plotController");
 const router = express.Router();
 
 router.post("/add", plotController.create);
-router.get("/", plotController.recordCurrentData);
+router.post("/", plotController.recordCurrentData);
 router.get("/all", plotController.getAll);
 
 router.delete("/", plotController.deleteAll);
