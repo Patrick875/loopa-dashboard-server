@@ -2,7 +2,7 @@ module.exports = (fn) => {
 	return async (req, res, next) => {
 		try {
 			await fn(req, res, next);
-		} catch (error) {
+		} catch (err) {
 			console.log(err);
 			return res.status(500).json({
 				status: "error",

@@ -2,6 +2,7 @@
 const asyncHandler = require("../utils/asyncHandler");
 const User = require("./../models/userModel");
 const jwt = require("jsonwebtoken");
+const bcrypt = require("bcryptjs");
 
 const signToken = (id) => {
 	return jwt.sign({ id }, process.env.JWT_SECRET, {
@@ -30,10 +31,13 @@ exports.getUsers = asyncHandler(async (req, res) => {
 	});
 });
 exports.signup = asyncHandler(async (req, res) => {
+	const { password } = req.body;
+	const salt = await bcrypt.genSalt(10);
+	const hashedPassword = await bcrypt.hash(password, salt);
 	const newUser = await User.create({
 		fullname: req.body.fullname,
 		email: req.body.email,
-		password: req.body.password,
+		password: hashedPassword,
 		telephone: req.body.telephone,
 	});
 
@@ -51,7 +55,12 @@ exports.login = asyncHandler(async (req, res, next) => {
 		$or: [{ email: userCredentials }, { telephone: userCredentials }],
 	}).select("+password");
 
-	if (!user || !(user.password === password)) {
+	const passwordCompare = await bcrypt.compare(
+		req.body.password,
+		user.password
+	);
+
+	if (!user || !passwordCompare) {
 		return res.status(400).json({
 			status: "fail",
 			message: "incorrect email or password",
