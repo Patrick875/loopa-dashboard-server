@@ -41,7 +41,6 @@ exports.signup = asyncHandler(async (req, res) => {
 });
 exports.login = asyncHandler(async (req, res, next) => {
 	const { password, userCredentials } = req.body;
-	// const userCredentials = req.body.user;
 	if (!userCredentials || !password) {
 		return res.status(401).json({
 			status: "fail",

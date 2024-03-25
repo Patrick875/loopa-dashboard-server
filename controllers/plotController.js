@@ -84,6 +84,9 @@ exports.deletePlot = asyncHandler(async (req, res) => {
 
 exports.deleteAll = asyncHandler(async (req, res) => {
 	await Plot.deleteMany();
+	await Ph.deleteMany();
+	await Temperature.deleteMany();
+	await Moisture.deleteMany();
 	res.status(204).json({
 		status: "success",
 		message: "deleted",
