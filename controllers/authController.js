@@ -55,19 +55,17 @@ exports.login = asyncHandler(async (req, res, next) => {
 		$or: [{ email: userCredentials }, { telephone: userCredentials }],
 	}).select("+password");
 
+	const passwordCompare = await bcrypt.compare(
+		req.body.password,
+		user.password
+	);
+	
 	if (!user || !passwordCompare) {
 		return res.status(400).json({
 			status: "fail",
 			message: "incorrect email or password",
 		});
-	}
-
-	const passwordCompare = await bcrypt.compare(
-		req.body.password,
-		user.password
-	);
-
-	
+	}	
 
 	sendToken(user, 200, req, res);
 });
